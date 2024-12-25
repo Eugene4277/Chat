@@ -5,7 +5,12 @@ import { AuthContext } from "../context/AuthContext";
 export const useUserSearch = () => {
 	const { user } = useContext(AuthContext);
 	const { handlePostData, error, isLoading, resetError } = usePostData();
-	const [potentialChats, setPotentialChats] = useState([]);
+	const [potentialConnections, setPotentialConnections] = useState([]);
+
+	const resetPotentialConnections = useCallback(() => {
+		setPotentialConnections([]);
+	});
+
 	const searchUsers = useCallback(
 		(term) => {
 			if (user && term) {
@@ -14,15 +19,21 @@ export const useUserSearch = () => {
 					userId: user._id,
 				};
 				handlePostData(`/users/search`, body, (res) => {
-					setPotentialChats(res);
+					setPotentialConnections(res);
 				});
 			} else {
-				setPotentialChats([]);
+				setPotentialConnections([]);
 				resetError();
 			}
 		},
 		[user]
 	);
 
-	return { searchUsers, potentialChats, error, isLoading };
+	return {
+		searchUsers,
+		resetPotentialConnections,
+		potentialConnections,
+		error,
+		isLoading,
+	};
 };

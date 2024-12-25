@@ -1,15 +1,17 @@
 import { useContext } from "react";
 import { Container, Stack, Spinner } from "react-bootstrap";
 import { ChatContext } from "../context/ChatContext";
-import { AuthContext } from "../context/AuthContext.jsx";
-import { ChatContextProvider } from "../context/ChatContext.jsx";
-import ChatListItem from "../components/Chat/ChatListItem.jsx";
+import { ChatContextProvider } from "../context/ChatContext";
+import { SocketContextProvider } from "../context/SocketContext";
+import ChatListItem from "../components/Chat/ChatListItem";
+import ChatBox from "../components/Chat/ChatBox";
+import ChatNavBar from "../components/Chat/ChatNavBar";
 
 const ChatContainer = () => {
-	const { error, isLoading, userChats } = useContext(ChatContext);
+	const { isLoading, userChats } = useContext(ChatContext);
 	return (
 		<Container>
-			{isLoading && (
+			{isLoading && !userChats?.length && (
 				<div className='d-flex justify-content-center'>
 					<Spinner
 						as='div'
@@ -20,28 +22,29 @@ const ChatContainer = () => {
 				</div>
 			)}
 			{userChats?.length ? (
-				<Stack
-					direction='horizontal'
-					gap={4}
-					className='align-items-start'
-				>
-					<Stack className='flex-grow-0 messages-box pe-3' gap={3}>
-						{userChats.map((chat) => {
-							return <ChatListItem chat={chat} key={chat._id} />;
-						})}
+				<Stack direction='horizontal' className='align-items-start'>
+					<Stack className='flex-grow-0'>
+						<ChatNavBar />
+						<Stack className='flex-grow-0 messages-box p-1'>
+							{userChats.map((chat) => {
+								return (
+									<ChatListItem chat={chat} key={chat._id} />
+								);
+							})}
+						</Stack>
 					</Stack>
-					<div>ChatBox</div>
+					<ChatBox />
 				</Stack>
 			) : null}
 		</Container>
 	);
 };
-
-const Chat = () => {
-	const { user } = useContext(AuthContext);
+const Chat = ({ user }) => {
 	return (
 		<ChatContextProvider user={user}>
-			<ChatContainer />
+			<SocketContextProvider user={user}>
+				<ChatContainer />
+			</SocketContextProvider>
 		</ChatContextProvider>
 	);
 };

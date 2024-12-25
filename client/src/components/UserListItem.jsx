@@ -1,12 +1,13 @@
 import { Stack } from "react-bootstrap";
 
-const UserListItem = ({ user }) => {
+const UserListItem = ({ user, ...rest }) => {
 	return (
 		<Stack
 			direction='horizontal'
 			gap={3}
 			className='user-card align-items-center p-1 justify-content-between'
 			role='button'
+			{...rest}
 		>
 			<div className='d-flex'>
 				<div className='me-2 pt-2'>

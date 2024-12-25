@@ -79,7 +79,7 @@ const findUser = safeRequest(async (req, res) => {
 
 	if (user) {
 		res.status(200).send({
-			id: user._id,
+			_id: user._id,
 			name: user.name,
 		});
 	} else {

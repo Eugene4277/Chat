@@ -5,15 +5,20 @@ export const useRequest = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const handleRequest = useCallback(
 		async (requestFn, params, onSuccess = null) => {
-			setIsLoading(true);
-			setError(null);
-			const res = await requestFn({ ...params });
-			if (res.error) {
-				setError(res.message);
-			} else {
-				onSuccess?.(res);
+			try {
+				setIsLoading(true);
+				setError(null);
+				const res = await requestFn({ ...params });
+				if (res.error) {
+					setError(res.message);
+				} else {
+					onSuccess?.(res);
+				}
+			} catch (error) {
+				setError(error?.message ?? null);
+			} finally {
+				setIsLoading(false);
 			}
-			setIsLoading(false);
 		},
 		[]
 	);

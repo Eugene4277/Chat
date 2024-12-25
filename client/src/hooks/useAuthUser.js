@@ -1,6 +1,8 @@
 import { useCallback, useState } from "react";
 import { usePostData } from "./usePostData";
 
+const socketUrl = import.meta.env.VITE_SOCKET_URL;
+
 export const useAuthUser = () => {
 	const { handlePostData, error, isLoading } = usePostData();
 	const [user, setUser] = useState(
@@ -19,5 +21,11 @@ export const useAuthUser = () => {
 		localStorage.removeItem("currentUser");
 	}, []);
 
-	return { handleAuthFormSubmit, handleLogOut, error, isLoading, user };
+	return {
+		handleAuthFormSubmit,
+		handleLogOut,
+		error,
+		isLoading,
+		user,
+	};
 };

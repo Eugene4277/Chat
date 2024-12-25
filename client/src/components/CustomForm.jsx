@@ -16,7 +16,6 @@ const CustomForm = ({
 		<Form onSubmit={onSubmit} {...rest}>
 			<Row
 				style={{
-					height: "100vh",
 					justifyContent: "center",
 					paddingTop: "10%",
 				}}
@@ -26,7 +25,7 @@ const CustomForm = ({
 						<h2>{title}</h2>
 						{children}
 						<Button
-							variant='primary'
+							variant='main'
 							type='submit'
 							disabled={isLoading}
 							{...submitButtonProps}

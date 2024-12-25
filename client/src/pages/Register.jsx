@@ -1,5 +1,6 @@
 import { useRef, useContext, useCallback } from "react";
-import { Form } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { Form, Container, Row, Col } from "react-bootstrap";
 import { AuthContext } from "../context/AuthContext";
 import CustomForm from "../components/CustomForm";
 
@@ -35,22 +36,42 @@ const Register = () => {
 	);
 
 	return (
-		<CustomForm
-			isLoading={isLoading}
-			error={error}
-			title={"Register"}
-			submitButtonTitle={"Register"}
-			submitButtonLoadingTitle={"Submitting"}
-			onSubmit={handleFormSubmit}
-		>
-			<Form.Control type='text' placeholder='Name' ref={nameRef} />
-			<Form.Control type='text' placeholder='Login' ref={loginRef} />
-			<Form.Control
-				type='password'
-				placeholder='Password'
-				ref={passwordRef}
-			/>
-		</CustomForm>
+		<>
+			<CustomForm
+				isLoading={isLoading}
+				error={error}
+				title={"Register"}
+				submitButtonTitle={"Register"}
+				submitButtonLoadingTitle={"Submitting"}
+				onSubmit={handleFormSubmit}
+			>
+				<Form.Control type='text' placeholder='Name' ref={nameRef} />
+				<Form.Control type='text' placeholder='Login' ref={loginRef} />
+				<Form.Control
+					type='password'
+					placeholder='Password'
+					ref={passwordRef}
+				/>
+			</CustomForm>
+			<Container>
+				<Row
+					style={{
+						justifyContent: "center",
+						paddingTop: "1rem",
+					}}
+				>
+					<Col xs={6} className='d-flex justify-content-center gap-2'>
+						<span>Have an account?</span>
+						<Link
+							to='/login'
+							className='link-main text-decoration-none'
+						>
+							Login
+						</Link>
+					</Col>
+				</Row>
+			</Container>
+		</>
 	);
 };
 

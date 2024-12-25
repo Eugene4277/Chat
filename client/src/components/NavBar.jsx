@@ -2,13 +2,21 @@ import { useContext } from "react";
 import { Container, Nav, Navbar, Stack, Spinner } from "react-bootstrap";
 import { NavLink, Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
+import { ChatContext } from "../context/ChatContext";
 import UserSearch from "./UserSearch";
 
 const NavBar = () => {
 	const { user, handleLogOut } = useContext(AuthContext);
+	const { setActiveChat, setMessages } = useContext(ChatContext);
+
+	const handleUserLogout = () => {
+		handleLogOut();
+		setActiveChat(null);
+		setMessages([]);
+	};
 
 	return (
-		<Navbar bg='dark' className='mb-4' style={{ height: "3.75rem" }}>
+		<Navbar bg='dark' style={{ height: "3.75rem" }}>
 			<Container>
 				<h2>
 					<Link to='/' className='link-light text-decoration-none'>
@@ -28,7 +36,7 @@ const NavBar = () => {
 								<Link
 									to='/login'
 									className='link-light text-decoration-none ms-auto'
-									onClick={handleLogOut}
+									onClick={handleUserLogout}
 								>
 									Log Out
 								</Link>

@@ -8,14 +8,14 @@ const createChat = safeRequest(async (req, res) => {
 		members: { $all: [firstId, secondId] },
 	});
 
-	if (chat) return res.status(200).json(chat);
+	if (chat) return res.status(200).json({ chat, isNew: false });
 
 	const newChat = new chatModel({
 		members: [firstId, secondId],
 	});
 
 	const response = await newChat.save();
-	return res.status(200).json(response);
+	return res.status(200).json({ chat: response, isNew: true });
 });
 
 const findUserChats = safeRequest(async (req, res) => {
