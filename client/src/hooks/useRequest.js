@@ -8,7 +8,7 @@ export const useRequest = () => {
 			try {
 				setIsLoading(true);
 				setError(null);
-				const res = await requestFn({ ...params });
+				const res = await requestFn(params);
 				if (res.error) {
 					setError(res.message);
 				} else {

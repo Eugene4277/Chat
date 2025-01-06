@@ -3,9 +3,10 @@ import { io } from "socket.io-client";
 
 const socketUrl = import.meta.env.VITE_SOCKET_URL;
 
-export const useSocketService = (user) => {
+export const useSocketService = ({ user, activeChat }) => {
 	const [socket, setSocket] = useState(null);
 	const [onlineUsers, setOnlineUsers] = useState({});
+	const [notifications, setNotifications] = useState({});
 
 	useEffect(() => {
 		const newSocket = io(socketUrl);
@@ -31,7 +32,7 @@ export const useSocketService = (user) => {
 		};
 	}, [socket]);
 
-	const handleSendSocketMessage = useCallback(
+	const sendSocketMessage = useCallback(
 		(message) => {
 			if (socket) {
 				socket.emit("sendMessage", message);
@@ -40,19 +41,65 @@ export const useSocketService = (user) => {
 		[socket]
 	);
 
-	const socketObserver = useMemo(() => {
+	const socketSubscriber = useMemo(() => {
 		if (socket) {
 			return {
-				onGetMessage: (onResponse) =>
+				subcribeOnGetMessage: (onResponse) =>
 					socket.on("getMessage", onResponse),
-				onCleanUp: () => socket.off("getMessage"),
+				unsubscribeFromMessages: () => socket.off("getMessage"),
 			};
 		}
 	}, [socket]);
 
+	useEffect(() => {
+		socket?.on("getNotification", (notification) => {
+			if (activeChat?._id === notification.message.chatId) {
+				notification = {
+					...notification,
+					isRead: true,
+				};
+			}
+			setNotifications((prevNotifications) => {
+				if (!prevNotifications[notification.message.chatId]) {
+					return {
+						...prevNotifications,
+						[notification.message.chatId]: [notification],
+					};
+				}
+				return {
+					...prevNotifications,
+					[notification.message.chatId]: [
+						notification,
+						...prevNotifications[notification.message.chatId],
+					],
+				};
+			});
+		});
+
+		return () => {
+			socket?.off("getNotification");
+		};
+	}, [activeChat, socket]);
+
+	const resetNotifications = useCallback((chatId) => {
+		setNotifications((prevNotifications) => {
+			if (prevNotifications[chatId])
+				return {
+					...prevNotifications,
+					[chatId]: prevNotifications[chatId].map((notification) => ({
+						...notification,
+						isRead: true,
+					})),
+				};
+			return prevNotifications;
+		});
+	}, []);
+
 	return {
 		onlineUsers,
-		handleSendSocketMessage,
-		socketObserver,
+		sendSocketMessage,
+		socketSubscriber,
+		notifications,
+		resetNotifications,
 	};
 };

@@ -1,12 +1,12 @@
 import { useCallback } from "react";
-import { getData } from "../utils/services";
+import { request } from "../utils/services";
 import { useRequest } from "./useRequest";
 
 export const useGetData = () => {
 	const { handleRequest, error, isLoading, resetError } = useRequest();
-	const handleGetData = useCallback(async (url, onSuccess = null) => {
-		handleRequest(getData, { url }, onSuccess);
+	const getData = useCallback(async (url, onSuccess = null) => {
+		handleRequest(request.get, { url }, onSuccess);
 	}, []);
 
-	return { handleGetData, error, isLoading, resetError };
+	return { getData, error, isLoading, resetError };
 };

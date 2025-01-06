@@ -4,13 +4,13 @@ import { usePostData } from "./usePostData";
 const socketUrl = import.meta.env.VITE_SOCKET_URL;
 
 export const useAuthUser = () => {
-	const { handlePostData, error, isLoading } = usePostData();
+	const { postData, error, isLoading } = usePostData();
 	const [user, setUser] = useState(
-		JSON.parse(localStorage.getItem("currentUser"))
+		() => JSON.parse(localStorage.getItem("currentUser"))
 	);
 
 	const handleAuthFormSubmit = useCallback((url, data) => {
-		handlePostData(url, data, (res) => {
+		postData(url, data, (res) => {
 			localStorage.setItem("currentUser", JSON.stringify(res));
 			setUser(res);
 		});

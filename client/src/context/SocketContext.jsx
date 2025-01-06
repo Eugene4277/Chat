@@ -3,16 +3,23 @@ import { useSocketService } from "../hooks/useSocketService";
 
 export const SocketContext = createContext({});
 
-export const SocketContextProvider = ({ children, user }) => {
-	const { onlineUsers, handleSendSocketMessage, socketObserver } =
-		useSocketService(user);
+export const SocketContextProvider = ({ children, user, activeChat }) => {
+	const {
+		onlineUsers,
+		sendSocketMessage,
+		socketSubscriber,
+		notifications,
+		resetNotifications,
+	} = useSocketService({ user, activeChat });
 
 	return (
 		<SocketContext.Provider
 			value={{
 				onlineUsers,
-				handleSendSocketMessage,
-				socketObserver,
+				sendSocketMessage,
+				socketSubscriber,
+				notifications,
+				resetNotifications,
 			}}
 		>
 			{children}

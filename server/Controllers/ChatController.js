@@ -1,4 +1,5 @@
 const chatModel = require("../Models/ChatModel");
+const messageModel = require("../Models/MessageModel");
 const { safeRequest } = require("../utils/request");
 
 const createChat = safeRequest(async (req, res) => {
@@ -24,7 +25,21 @@ const findUserChats = safeRequest(async (req, res) => {
 		members: { $in: [userId] },
 	});
 
-	return res.status(200).json(userChats);
+	const data = await Promise.all(
+		userChats.map(async (chat) => {
+			const message = await messageModel
+				.findOne({ chatId: chat._id }, {}, { sort: { createdAt: -1 } })
+				.exec();
+
+			return {
+				...chat.toObject(),
+				lastMessage: message ? message.content : null,
+				lastMessageTimestamp: message ? message.createdAt : null,
+			};
+		})
+	);
+
+	return res.status(200).json(data);
 });
 const findChat = safeRequest(async (req, res) => {
 	const { firstId, secondId } = req.params;

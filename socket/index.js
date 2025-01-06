@@ -33,12 +33,21 @@ io.on("connection", (socket) => {
 		const { recipientId, ...recipientMessage } = message;
 		if (onlineUsers[recipientId]) {
 			const { socketId } = onlineUsers[recipientId];
-			socket.to(socketId).emit("getMessage", recipientMessage);
-			socket.to(socketId).emit("getNotification", {
-				senderId: recipientMessage.senderId,
-				chatId: recipientMessage.chatId,
+			io.to(socketId).emit("getMessage", recipientMessage);
+			io.to(socketId).emit("getNotification", {
 				isRead: false,
 				date: new Date(),
+				message: recipientMessage,
+			});
+		}
+
+		const { senderId } = recipientMessage;
+		if (onlineUsers[senderId]) {
+			const { socketId } = onlineUsers[senderId];
+			io.to(socketId).emit("getNotification", {
+				isRead: false,
+				date: new Date(),
+				message: recipientMessage,
 			});
 		}
 	});

@@ -26,7 +26,7 @@ const ChatNavBar = () => {
 					/>
 				}
 			>
-				<NavDropdown.Item disabled={true}>
+				<NavDropdown.Item style={{color: "var(--bs-dropdown-link-color)"}} disabled={true}>
 					Logged in as {user.name}
 				</NavDropdown.Item>
 				<NavDropdown.Divider />

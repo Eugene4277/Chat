@@ -4,7 +4,7 @@ import { AuthContext } from "../context/AuthContext";
 
 export const useUserSearch = () => {
 	const { user } = useContext(AuthContext);
-	const { handlePostData, error, isLoading, resetError } = usePostData();
+	const { postData, error, isLoading, resetError } = usePostData();
 	const [potentialConnections, setPotentialConnections] = useState([]);
 
 	const resetPotentialConnections = useCallback(() => {
@@ -18,7 +18,7 @@ export const useUserSearch = () => {
 					query: term,
 					userId: user._id,
 				};
-				handlePostData(`/users/search`, body, (res) => {
+				postData(`/users/search`, body, (res) => {
 					setPotentialConnections(res);
 				});
 			} else {

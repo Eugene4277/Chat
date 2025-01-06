@@ -1,5 +1,5 @@
 const baseUrl = import.meta.env.VITE_BASE_URL;
-const request = async ({ url, method, body = null, ...rest }) => {
+const requestFn = async ({ url, method, body = null, ...rest }) => {
 	let options = {
 		method,
 		headers: {
@@ -22,21 +22,22 @@ const request = async ({ url, method, body = null, ...rest }) => {
 	return data;
 };
 
-export const postData = async ({ url, body }) => {
-	const data = await request({
-		url,
-		method: "POST",
-		body,
-	});
+export const request = {
+	get: async ({ url }) => {
+		const data = await requestFn({
+			url,
+			method: "GET",
+		});
 
-	return data;
-};
+		return data;
+	},
+	post: async ({ url, body }) => {
+		const data = await requestFn({
+			url,
+			method: "POST",
+			body,
+		});
 
-export const getData = async ({ url }) => {
-	const data = await request({
-		url,
-		method: "GET",
-	});
-
-	return data;
+		return data;
+	},
 };

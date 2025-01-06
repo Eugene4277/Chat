@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { useUserChats } from "../hooks/useUserChats";
+import { useMessageService } from "../hooks/useMessageService";
 
 export const ChatContext = createContext({});
 
@@ -14,7 +14,7 @@ export const ChatContextProvider = ({ children, user }) => {
 		messages,
 		sendMessage,
 		setMessages,
-	} = useUserChats(user);
+	} = useMessageService(user);
 
 	return (
 		<ChatContext.Provider

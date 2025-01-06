@@ -2,16 +2,16 @@ import { useState, useEffect, useCallback } from "react";
 import { useGetData } from "./useGetData";
 import { usePostData } from "./usePostData";
 
-export const useUserChats = (user) => {
+export const useMessageService = (user) => {
 	const [userChats, setUserChats] = useState([]);
 	const [activeChat, setActiveChat] = useState(null);
 	const [messages, setMessages] = useState([]);
-	const { handleGetData, error, isLoading } = useGetData();
-	const { handlePostData } = usePostData();
+	const { getData, error, isLoading } = useGetData();
+	const { postData } = usePostData();
 
 	const createChat = useCallback((selectedUserId) => {
 		const data = { firstId: user._id, secondId: selectedUserId };
-		handlePostData("/chats/create", data, (res) => {
+		postData("/chats/create", data, (res) => {
 			if (res.isNew) {
 				setUserChats((prevUserChats) => [...prevUserChats, res.chat]);
 			} else {
@@ -21,12 +21,12 @@ export const useUserChats = (user) => {
 	}, []);
 
 	const sendMessage = useCallback((data, onSuccess) => {
-		handlePostData("/messages/send", data, onSuccess);
+		postData("/messages/send", data, onSuccess);
 	}, []);
 
 	useEffect(() => {
 		if (activeChat) {
-			handleGetData(`/messages/${activeChat._id}`, (res) => {
+			getData(`/messages/${activeChat._id}`, (res) => {
 				setMessages(res);
 			});
 		}
@@ -34,7 +34,7 @@ export const useUserChats = (user) => {
 
 	useEffect(() => {
 		if (user) {
-			handleGetData(`/chats/${user._id}`, (res) => {
+			getData(`/chats/${user._id}`, (res) => {
 				setUserChats(res);
 			});
 		}

@@ -11,10 +11,9 @@ const ChatBox = () => {
 	const { user } = useContext(AuthContext);
 	const { activeChat, messages, isLoading, sendMessage, setMessages } =
 		useContext(ChatContext);
-	const { handleSendSocketMessage, socketObserver } =
-		useContext(SocketContext);
+	const { sendSocketMessage, socketSubscriber } = useContext(SocketContext);
 	const { recipientUser, getRecipientUser } = useFetchRecipientUser(user);
-	const { onGetMessage, onCleanUp } = socketObserver;
+	const { subcribeOnGetMessage, unsubscribeFromMessages } = socketSubscriber;
 	const [text, setText] = useState("");
 	const messagesEndRef = useRef(null);
 
@@ -31,7 +30,7 @@ const ChatBox = () => {
 	}, [messages]);
 
 	useEffect(() => {
-		onGetMessage((newMessage) => {
+		subcribeOnGetMessage((newMessage) => {
 			if (activeChat?._id === newMessage.chatId) {
 				setMessages((prev) => {
 					return [...prev, newMessage];
@@ -40,7 +39,7 @@ const ChatBox = () => {
 		});
 
 		return () => {
-			onCleanUp();
+			unsubscribeFromMessages();
 		};
 	}, [activeChat]);
 
@@ -54,7 +53,7 @@ const ChatBox = () => {
 		sendMessage(data, (res) => {
 			setText("");
 			setMessages((prev) => [...prev, res]);
-			handleSendSocketMessage({
+			sendSocketMessage({
 				...res,
 				recipientId: recipientUser?._id,
 			});
